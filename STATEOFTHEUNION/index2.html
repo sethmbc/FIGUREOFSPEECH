@@ -1,0 +1,493 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+.grid-container {
+  display: grid;
+ grid-template-columns: 50%;
+/* padding: 10px;*/
+
+}
+
+.grid-container img{
+   display: grid;
+ grid-template-columns: 50%;
+  width:100%;
+}
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
+<script>"https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.4.6/processing.js"</script>
+<script>
+
+
+
+
+
+var a= function( p ) {
+
+let data
+
+let list = [];
+let list1 = [];
+
+p.preload = function () {
+     p.data = p.loadTable(
+      "Buchanan.csv",
+                  "csv",
+                  "header")
+}
+
+
+p.setup = function(){
+  p.createCanvas(p.windowWidth,300);
+  p.frameRate(10);
+  p.background(255);
+  p.pixelDensity(2);
+  // noFill();
+  for(let i =0; i< p.data.getRowCount(); i++){
+   list.push(p.data.getNum(i, "polarity")*100); 
+  }
+   for(let i =0; i< p.data.getRowCount(); i++){
+   list1.push(p.data.getNum(i, "subjectivity")*100); 
+  }
+// blendMode(OVERLAY)
+  
+}
+
+let x=0;
+let y=0;
+
+p.draw = function(){
+
+  p.background(255,0.9);
+
+
+list.sort(function(a, b){return a-b});
+list1.sort(function(a, b){return a-b});
+
+
+  // list.sort(function(a, b){return b-a});
+  // list1.sort(function(a, b){return b-a});
+
+  p.translate(p.width/2,p.height/2);
+    p.push();
+      p.drawLines1(35)
+      // drawLines1();
+      // translate(0,-10);
+    p.pop();   
+    p.push();
+    p.drawLines(-35);
+    p.pop();
+
+     // push();
+     // drawEllipses(-35);
+     // pop();
+  
+
+}
+
+p.drawLines = function(deg){
+  p.rotate(p.frameCount/deg)
+
+ // draw lines
+  let px = 0;
+  let py = list[0];
+  p.scale(1,-1)
+  for(let i =0; i < list.length; i++){
+    let x = i * (p.width / (p.data.getRowCount()-1));
+    let y = list[i];
+    p.strokeWeight(p.data.getNum(i,'polarity')-.1);
+    p.stroke(0,0,p.data.getNum(i,'polarity')+200)
+    p.line(px, py, x, y);
+    
+    //store the last position
+    px = x;
+    py = y;
+  } 
+}
+
+p.drawLines1 = function(deg){
+  p.rotate(p.frameCount/deg)
+
+ // draw lines
+  let px = 0;
+  let py = list1[0];
+  p.scale(1,-1)
+  for(let i =0; i < list1.length; i++){
+    let x = i * (p.width / (p.data.getRowCount()-1));
+    let y = list1[i];
+    p.strokeWeight(p.data.getNum(i,'polarity')-.1)
+    p.stroke(p.data.getNum(i,'subjectivity')+200,0,0)
+    p.line(px, py, x, y);
+    
+    //store the last position
+    px = x;
+    py = y;
+  } 
+}
+
+}
+var myp5 = new p5(a, 'Buchanan');
+
+
+
+
+
+
+
+
+var b= function( p ) {
+
+let data
+
+let list = [];
+let list1 = [];
+var lastPrice = 0;
+
+p.preload = function () {
+     p.data = p.loadTable(
+      "Buchanan.csv",
+                  "csv",
+                  "header")
+}
+
+
+p.setup = function(){
+  p.createCanvas(p.windowWidth,100);
+  p.frameRate(10);
+  p.background(255);
+  p.pixelDensity(2);
+  // noFill();
+  for(let i =0; i< p.data.getRowCount(); i++){
+   list.push(p.data.getNum(i, "polarity")*50); 
+  }
+   for(let i =0; i< p.data.getRowCount(); i++){
+   list1.push(p.data.getNum(i, "subjectivity")*50); 
+  }
+// blendMode(OVERLAY)
+  
+}
+
+p.draw = function() { 
+list.sort(function(a, b){return a-b});
+list1.sort(function(a, b){return a-b});
+// p.reverse(list)
+// p.reverse(list1)
+    p.push();
+    p.translate(0,50)
+      p.drawLines()
+      // drawLines1();
+    p.pop(); 
+
+      p.push();
+      p.translate(0,50)
+      p.drawLines1()
+      // drawLines1();
+    p.pop(); 
+    p.name();
+ 
+
+
+}
+
+p.drawLines = function(){
+
+ // draw lines
+  let px = 0;
+  let py = list[0];
+  p.scale(1,-1)
+  for(let i =0; i < list.length; i++){
+    let x = i * (p.width / (list.length-1));
+    let y = list[i];
+    p.strokeWeight(.1);
+    p.stroke(0,0,p.data.getNum(i,'polarity')+200)
+    p.line(px, py, x, y);
+    
+    //store the last position
+    px = x;
+    py = y;
+  } 
+}
+p.drawLines1 = function(){
+
+ // draw lines
+  let px = 0;
+  let py = list1[0];
+  p.scale(1,-1)
+  for(let i =0; i < list1.length; i++){
+    let x = i * (p.width / (list1.length-1));
+    let y = list1[i];
+    p.strokeWeight(.1)
+    p.stroke(p.data.getNum(i,'subjectivity')+200,0,0)
+    p.line(px, py, x, y);
+    
+    //store the last position
+    px = x;
+    py = y;
+  } 
+}
+p.name = function (){
+  p.textSize(11);
+  p.fill(0);
+  p.text('Buchanan', 0, 10, 50);
+}
+}
+var myp5 = new p5(b, 'Buchanan1');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var c= function( p ) {
+
+let data
+
+let list = [];
+let list1 = [];
+
+p.preload = function () {
+     p.data = p.loadTable(
+      "Pierce.csv",
+                  "csv",
+                  "header")
+}
+
+
+p.setup = function(){
+  p.createCanvas(p.windowWidth,300);
+  p.frameRate(10);
+  p.background(255);
+  p.pixelDensity(2);
+  // noFill();
+  for(let i =0; i< p.data.getRowCount(); i++){
+   list.push(p.data.getNum(i, "polarity")*100); 
+  }
+   for(let i =0; i< p.data.getRowCount(); i++){
+   list1.push(p.data.getNum(i, "subjectivity")*100); 
+  }
+// blendMode(OVERLAY)
+  
+}
+
+let x=0;
+let y=0;
+
+p.draw = function(){
+
+  p.background(255,0.9);
+
+
+list.sort(function(a, b){return a-b});
+list1.sort(function(a, b){return a-b});
+
+
+  // list.sort(function(a, b){return b-a});
+  // list1.sort(function(a, b){return b-a});
+
+  p.translate(p.width/2,p.height/2);
+    p.push();
+      p.drawLines1(35)
+      // drawLines1();
+      // translate(0,-10);
+    p.pop();   
+    p.push();
+    p.drawLines(-35);
+    p.pop();
+
+     // push();
+     // drawEllipses(-35);
+     // pop();
+  
+
+}
+
+p.drawLines = function(deg){
+  p.rotate(p.frameCount/deg)
+
+ // draw lines
+  let px = 0;
+  let py = list[0];
+  p.scale(1,-1)
+  for(let i =0; i < list.length; i++){
+    let x = i * (p.width / (p.data.getRowCount()-1));
+    let y = list[i];
+    p.strokeWeight(p.data.getNum(i,'polarity')-.1);
+    p.stroke(0,0,p.data.getNum(i,'polarity')+200)
+    p.line(px, py, x, y);
+    
+    //store the last position
+    px = x;
+    py = y;
+  } 
+}
+
+p.drawLines1 = function(deg){
+  p.rotate(p.frameCount/deg)
+
+ // draw lines
+  let px = 0;
+  let py = list1[0];
+  p.scale(1,-1)
+  for(let i =0; i < list1.length; i++){
+    let x = i * (p.width / (p.data.getRowCount()-1));
+    let y = list1[i];
+    p.strokeWeight(p.data.getNum(i,'polarity')-.1)
+    p.stroke(p.data.getNum(i,'subjectivity')+200,0,0)
+    p.line(px, py, x, y);
+    
+    //store the last position
+    px = x;
+    py = y;
+  } 
+}
+
+}
+var myp5 = new p5(c, 'Obama');
+
+
+
+
+
+
+
+
+var d= function( p ) {
+
+let data
+
+let list = [];
+let list1 = [];
+var lastPrice = 0;
+
+p.preload = function () {
+     p.data = p.loadTable(
+      "Pierce.csv",
+                  "csv",
+                  "header")
+}
+
+
+p.setup = function(){
+  p.createCanvas(p.windowWidth,100);
+  p.frameRate(10);
+  p.background(255);
+  p.pixelDensity(2);
+  // noFill();
+  for(let i =0; i< p.data.getRowCount(); i++){
+   list.push(p.data.getNum(i, "polarity")*50); 
+  }
+   for(let i =0; i< p.data.getRowCount(); i++){
+   list1.push(p.data.getNum(i, "subjectivity")*50); 
+  }
+// blendMode(OVERLAY)
+  
+}
+
+p.draw = function() { 
+list.sort(function(a, b){return a-b});
+list1.sort(function(a, b){return a-b});
+// p.reverse(list)
+// p.reverse(list1)
+    p.push();
+    p.translate(0,50)
+      p.drawLines()
+      // drawLines1();
+    p.pop(); 
+
+      p.push();
+      p.translate(0,50)
+      p.drawLines1()
+      // drawLines1();
+    p.pop(); 
+    p.name();
+ 
+
+
+}
+
+p.drawLines = function(){
+
+ // draw lines
+  let px = 0;
+  let py = list[0];
+  p.scale(1,-1)
+  for(let i =0; i < list.length; i++){
+    let x = i * (p.width / (list.length-1));
+    let y = list[i];
+    p.strokeWeight(.1);
+    p.stroke(0,0,p.data.getNum(i,'polarity')+200)
+    p.line(px, py, x, y);
+    
+    //store the last position
+    px = x;
+    py = y;
+  } 
+}
+p.drawLines1 = function(){
+
+ // draw lines
+  let px = 0;
+  let py = list1[0];
+  p.scale(1,-1)
+  for(let i =0; i < list1.length; i++){
+    let x = i * (p.width / (list1.length-1));
+    let y = list1[i];
+    p.strokeWeight(.1)
+    p.stroke(p.data.getNum(i,'subjectivity')+200,0,0)
+    p.line(px, py, x, y);
+    
+    //store the last position
+    px = x;
+    py = y;
+  } 
+}
+p.name = function (){
+  p.textSize(11);
+  p.fill(0);
+  p.text('Pierce', 0, 10, 50);
+}
+}
+var myp5 = new p5(d, 'Pierce1');
+
+
+</script>
+</head>
+<body>
+ <!--  <img src="https://raw.githubusercontent.com/sethmbc/SEALOFAPPROVAL/main/SEAL%20OF%20APPROVAL/1.jpg?token=AMEQ2EKQSGG5E7RARL3DGCDABBQ6G" alt="Girl in a jacket"> -->
+  <div class="grid-container">
+  <div class="grid-item" id = 'Buchanan1'></div>
+  <div class="grid-item" id='Buchanan'></div>
+  <div class="grid-item" id='Pierce'></div>
+  <div class="grid-item" id = 'Pierce1'></div>
+  <div class="grid-item" id = 'G.W. Bush'></div>  
+  <div class="grid-item" id = "Clinton"></div>
+  <div class="grid-item" id = 'Bush'></div>
+  <div class="grid-item" id = 'Reagan'></div>  
+  <div class="grid-item" id = 'Carter'></div>
+  <div class="grid-item" id = 'Ford'></div>
+  <div class="grid-item" id = 'Nixon'></div> 
+  <div class="grid-item" id = Johnson></div> 
+  <div class="grid-item" id = 'Kennedy'></div> 
+  <div class="grid-item" id = 'Eisenhower'></div> 
+  <div class="grid-item" id = 'Truman'></div> 
+   <div class="grid-item" id = 'Roosevelt'></div> 
+</div>
+</body>
+</html>
